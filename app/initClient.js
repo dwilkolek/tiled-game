@@ -55,7 +55,8 @@ this.initClient = function (ctx) {
     ctx.map = GameMap(ctx);
     ctx.monsterRepo = MonsterRepo(ctx);
 
-    ctx.spawner = new Spawner(ctx)
+    ctx.spawner = new Spawner(ctx);
+    console.log('mobs spawned');
     ctx.player = new Player(ctx)
     // console.log('player', ctx.player)
 

@@ -19,7 +19,84 @@ Player = function (ctx) {
   var _allowIAttackTimeout = null;
 
   var _tween = null;
-  var _sprite = ctx.game.add.sprite(ctx.tileToPixel(80), ctx.tileToPixel(100), 'player');
+  var x = 80;
+  var y = 100;
+  var range = 1;
+
+  var foundSpot = ctx.checkEmptySpotOnMap(x, y);
+
+
+
+
+  while (!foundSpot) {
+
+    for (var i = x - range; i <= x + range; i++) {
+      //1st row
+      // console.log('test', i, y - range)
+      // var s = game.add.graphics(32, 32);
+      // var color = 0xFF0000;
+      // s.lineStyle(2, color, 1);
+      // s.drawRect(ctx.tileToPixel(i), ctx.tileToPixel(y - range), 5, 5);
+      if (ctx.checkEmptySpotOnMap(i, y - range)) {
+        foundSpot = true;
+        x = i;
+        y = y - range;
+        break;
+      }
+      //last row
+      // console.log('test', i, y + range)
+      // var s = game.add.graphics(32, 32);
+      // var color = 0x00FFFF;
+      // s.lineStyle(2, color, 1);
+      // s.drawRect(ctx.tileToPixel(i), ctx.tileToPixel(y + range), 5, 5);
+      if (ctx.checkEmptySpotOnMap(i, y + range)) {
+        foundSpot = true;
+        x = i;
+        y = y - range;
+        break;
+      }
+    }
+
+    if (foundSpot) {
+      break;
+    }
+
+
+    for (var i = y - range; i <= y + range; i++) {
+      //1st row
+      // console.log('test', x - range, i)
+      // var s = game.add.graphics(32, 32);
+      // var color = 0xFFAA00;
+      // s.lineStyle(2, color, 1);
+      // s.drawRect(ctx.tileToPixel(x - range), ctx.tileToPixel(i), 5, 5);
+      if (ctx.checkEmptySpotOnMap(x - range, i)) {
+        foundSpot = true;
+        x = x - range;
+        y = i;
+        break;
+      }
+      //last row
+      // console.log('test', x + range, i)
+      // var s = game.add.graphics(32, 32);
+      // var color = 0xFF00FF;
+
+      // s.lineStyle(2, color, 1);
+      // s.drawRect(ctx.tileToPixel(x + range), ctx.tileToPixel(i), 5, 5);
+      if (ctx.checkEmptySpotOnMap(x + range, i)) {
+        foundSpot = true;
+        x = x + range;
+        y = i;
+        break;
+      }
+    }
+
+    range++;
+    console.log(range);
+  }
+
+
+  console.log(80 - x, 100 - y)
+  var _sprite = ctx.game.add.sprite(ctx.tileToPixel(x), ctx.tileToPixel(y), 'player');
 
   // _sprite.scale.setTo(ctx.scale, ctx.scale);
   var _target = null;

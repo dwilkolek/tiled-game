@@ -3,12 +3,12 @@ this.monsterMap = [
     spawnId: 'ghostspawn1',
     sprite: 'ghost',
     area: {
-      x1: 60,
-      x2: 100,
-      y1: 95,
+      x1: 70,
+      x2: 90,
+      y1: 80,
       y2: 110
     },
-    max: 50,
+    max: 2000,
     current: 0,
     spec: {
       hp: 25,

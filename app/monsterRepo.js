@@ -29,16 +29,13 @@ this.MonsterRepo = function (ctx) {
     }
   }
 
-  this.checkTile = function (tileX, tileY) {
-    var posX = ctx.tileToPixel(tileX);
-    var posY = ctx.tileToPixel(tileY);
-    var empty = true;
-    monsters.forEach(function (monster) {
-      if (monster.sprite.x == posX && monster.sprite.y == posY) {
-        empty = false;
-      }
-    })
-    return empty;
+  this.isEmpty = function (tileX, tileY) {
+    // var posX = ctx.tileToPixel(tileX);
+    // var posY = ctx.tileToPixel(tileY);
+    return monsters.filter(function (monster) {
+      // console.log(monster.tileX, tileX, monster.tileY, tileY)
+      return monster.tileX == tileX && monster.tileY == tileY;
+    }).length == 0;
 
   }
 

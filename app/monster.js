@@ -11,6 +11,9 @@ this.Monster = function (ctx, monsterDefinition) {
   this.movementSpeed = ctx.RANGE[monsterDefinition.spec.attackRange];
   this.agility = monsterDefinition.spec.agility;
 
+  this.tileX;
+  this.tileY;
+
 
 
   var _hpBar = null
@@ -62,7 +65,11 @@ this.Monster = function (ctx, monsterDefinition) {
     var x = -1;
     var y = -1;
     var tries = 0;
-    while (x < 0 || y < 0 || !checkEmptySpotOnMap(x, y)) {
+
+    // var px = (ctx.player.getSprite().x+16)/32;
+    // var py = (ctx.player.getSprite().y+16)/32;
+
+    while (x < 0 || y < 0 || !checkEmptySpotOnMap(x, y)) { //|| (px == x && py == y)
       // console.log('try',tryx)
       tries++
       x = random(monsterDefinition.area.x1, monsterDefinition.area.x2);
@@ -72,6 +79,9 @@ this.Monster = function (ctx, monsterDefinition) {
         return null;
       }
     }
+
+    this.tileX = x;
+    this.tileY = y;
 
     this.sprite = ctx.monstersGroup.create(ctx.tileToPixel(x), ctx.tileToPixel(y), monsterDefinition.sprite);
     // this.sprite.scale.setTo(ctx.scale, ctx.scale);

@@ -26,7 +26,7 @@ var GameMap = function (ctx) {
 }
 
 this.checkEmptySpotOnMap = function (tileX, tileY, includePlayer) {
-  var anyMonster = this.monsterRepo && this.monsterRepo.checkTile(tileX,tileY);
+  var anyMonster = this.monsterRepo && this.monsterRepo.isEmpty(tileX,tileY);
   if (anyMonster === false) {
     return false;
   }
