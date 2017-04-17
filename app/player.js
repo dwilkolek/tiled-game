@@ -9,6 +9,8 @@ Player = function (ctx) {
   this.attackRange = ctx.RANGE.SEMI_RANGED;
 
   this.lvl = 2;
+  this.exp = 0;
+  this.requiredExp = (this.lvl + 1) * 300;
 
 
 
@@ -171,6 +173,17 @@ Player = function (ctx) {
       } else {
         _allowAttack = true;
       }
+    }
+  }
+
+  this.expUp = function (exp) {
+    console.log(this.lvl + 'lvl: ' + exp + 'exp', 'missing' + (this.requiredExp - this.exp))
+    this.exp += exp;
+    while (this.exp > this.requiredExp) {
+      this.exp -= this.requiredExp;
+      this.lvl += 1;
+      this.requiredExp = (this.lvl + 1) * 300;
+      console.log('lvl up');
     }
   }
 

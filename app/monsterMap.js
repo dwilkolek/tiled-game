@@ -8,7 +8,7 @@ this.monsterMap = [
       y1: 80,
       y2: 110
     },
-    max: 2000,
+    max: 50,
     current: 0,
     spec: {
       hp: 25,
@@ -17,7 +17,8 @@ this.monsterMap = [
       agility: 16,
       attackRange: 'CLOSE',
       attackSpeed: 'FAST',
-      movementSpeed: 'FAST'
+      movementSpeed: 'FAST',
+      exp: 200
     }
   },
   {
@@ -27,7 +28,7 @@ this.monsterMap = [
       x1: 60,
       x2: 100,
       y1: 95,
-      y2: 110
+      y2: 110,
     },
     max: 50,
     current: 0,
@@ -38,7 +39,8 @@ this.monsterMap = [
       agility: 5,
       attackRange: 'CLOSE',
       attackSpeed: 'FAST',
-      movementSpeed: 'FAST'
+      movementSpeed: 'FAST',
+      exp: 10
     }
   }
 ];
