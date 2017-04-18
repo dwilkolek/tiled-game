@@ -8,9 +8,7 @@ app.get('/', (request, response) => {
   // throw new Error('oops')
   response.sendFile('index.html', { root: path.join(__dirname, '') })
 })
-app.get('/phaser.js', (request, response) => {
-  response.sendFile('node_modules/phaser/build/phaser.min.js', { root: path.join(__dirname, '') })
-})
+
 app.use('/app', express.static('app'));
 // app.use('/js', express.static('js'));
 app.use('/assets', express.static('assets'));

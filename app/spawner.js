@@ -12,13 +12,8 @@ Spawner = function (ctx) {
   }
 
   var createMonster = function (monsterDefinition, monstersToCreate) {
-    console.log('spawned ' + monstersToCreate + ' @ ' + monsterDefinition.spawnId)
     for (var i = 0; i < monstersToCreate; i++) {
-
-
       ctx.monsterRepo.add(new Monster(ctx, monsterDefinition))
-
-
     }
   }
 
@@ -38,6 +33,6 @@ this.tileToPixel = function (tile) {
   return tile * 32 - 16;
 }
 
-// this.pixelToTile = function(pixel) {
-//   return pixel % 32 == 0 ? pixel / 32 : pixel
-// }
+this.pixelToTile = function(pixel) {
+  return pixel / 32 + 0.5;
+}

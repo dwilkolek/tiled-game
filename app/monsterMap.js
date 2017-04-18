@@ -3,10 +3,10 @@ this.monsterMap = [
     spawnId: 'ghostspawn1',
     sprite: 'ghost',
     area: {
-      x1: 70,
-      x2: 90,
-      y1: 80,
-      y2: 110
+      x1: 80,
+      x2: 81,
+      y1: 99,
+      y2: 101
     },
     max: 50,
     current: 0,
@@ -17,7 +17,7 @@ this.monsterMap = [
       agility: 16,
       attackRange: 'CLOSE',
       attackSpeed: 'FAST',
-      movementSpeed: 'FAST',
+      movementSpeed: 'SLOW',
       exp: 200
     }
   },

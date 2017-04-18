@@ -1,42 +1,43 @@
 this.MonsterRepo = function (ctx) {
   ctx.monstersGroup = ctx.game.add.group();
 
-  var monsters = [];
-
-
-  // // monster = {sprite: ,
-  //   hp: 10,
-  //     attack: 5,
-  //     defence :13,
-  //     attackRange: 'CLOSE',
-  //     attackSpeed: 'FAST',
-  //     movementSpeed: 'FAST'}
+  this.monsters = [];
 
   this.kill = function (monsterUid) {
-    monsters = monsters.filter(monster => {
+    this.monsters = this.monsters.filter(monster => {
       return monster.uid !== monsterUid;
     })
   }
   this.update = function () {
-    monsters.forEach(monster => {
+    this.monsters.forEach(monster => {
       monster.update();
     })
   }
 
   this.add = function (monster) {
     if (monster && monster.sprite) {
-      monsters.push(monster);
+      this.monsters.push(monster);
     }
   }
 
-  this.isEmpty = function (tileX, tileY) {
-    // var posX = ctx.tileToPixel(tileX);
-    // var posY = ctx.tileToPixel(tileY);
-    return monsters.filter(function (monster) {
-      // console.log(monster.tileX, tileX, monster.tileY, tileY)
-      return monster.tileX == tileX && monster.tileY == tileY;
-    }).length == 0;
+  this.isEmpty = function (tileX, tileY, monster) {
+    for (var i = 0; i < this.monsters.length; i++) {
+      if (monster !== this.monsters[i]) {
+        if (this.monsters[i].location) {
+          if (tileX == this.monsters[i].location.x && tileY == this.monsters[i].location.y) {
+            return false;
+          }
+        }
+        if (this.monsters[i].nextLocation) {
+          if (tileX == this.monsters[i].nextLocation.x && tileY == this.monsters[i].nextLocation.y) {
+            return false;
+          }
+        }
+      }
 
+    }
+
+    return true;
   }
 
   return this;

@@ -1,6 +1,5 @@
-Player = function (ctx) {
+Player = function (ctx, px, py) {
 
-  _self = this;
   this.attack = 10;
   this.defence = 10;
   this.agility = 10;
@@ -12,8 +11,8 @@ Player = function (ctx) {
   this.exp = 0;
   this.requiredExp = (this.lvl + 1) * 300;
 
-
-
+  this.nextLocation;
+  this.sprite;
 
   var _allowInput = true;
   var _allowAttack = true;
@@ -21,36 +20,21 @@ Player = function (ctx) {
   var _allowIAttackTimeout = null;
 
   var _tween = null;
-  var x = 80;
-  var y = 100;
+  var x = px;
+  var y = py;
   var range = 1;
 
   var foundSpot = ctx.checkEmptySpotOnMap(x, y);
 
-
-
-
   while (!foundSpot) {
 
     for (var i = x - range; i <= x + range; i++) {
-      //1st row
-      // console.log('test', i, y - range)
-      // var s = game.add.graphics(32, 32);
-      // var color = 0xFF0000;
-      // s.lineStyle(2, color, 1);
-      // s.drawRect(ctx.tileToPixel(i), ctx.tileToPixel(y - range), 5, 5);
       if (ctx.checkEmptySpotOnMap(i, y - range)) {
         foundSpot = true;
         x = i;
         y = y - range;
         break;
       }
-      //last row
-      // console.log('test', i, y + range)
-      // var s = game.add.graphics(32, 32);
-      // var color = 0x00FFFF;
-      // s.lineStyle(2, color, 1);
-      // s.drawRect(ctx.tileToPixel(i), ctx.tileToPixel(y + range), 5, 5);
       if (ctx.checkEmptySpotOnMap(i, y + range)) {
         foundSpot = true;
         x = i;
@@ -65,25 +49,13 @@ Player = function (ctx) {
 
 
     for (var i = y - range; i <= y + range; i++) {
-      //1st row
-      // console.log('test', x - range, i)
-      // var s = game.add.graphics(32, 32);
-      // var color = 0xFFAA00;
-      // s.lineStyle(2, color, 1);
-      // s.drawRect(ctx.tileToPixel(x - range), ctx.tileToPixel(i), 5, 5);
       if (ctx.checkEmptySpotOnMap(x - range, i)) {
         foundSpot = true;
         x = x - range;
         y = i;
         break;
       }
-      //last row
-      // console.log('test', x + range, i)
-      // var s = game.add.graphics(32, 32);
-      // var color = 0xFF00FF;
 
-      // s.lineStyle(2, color, 1);
-      // s.drawRect(ctx.tileToPixel(x + range), ctx.tileToPixel(i), 5, 5);
       if (ctx.checkEmptySpotOnMap(x + range, i)) {
         foundSpot = true;
         x = x + range;
@@ -93,80 +65,59 @@ Player = function (ctx) {
     }
 
     range++;
-    console.log(range);
+    if (range > 20) {
+      throw new DOMException('SOMETHING WENT HORRIBLY WRONG');
+    }
   }
 
 
-  console.log(80 - x, 100 - y)
-  var _sprite = ctx.game.add.sprite(ctx.tileToPixel(x), ctx.tileToPixel(y), 'player');
+  this.location = { x: x, y: y }
+  this.sprite = ctx.game.add.sprite(ctx.tileToPixel(x), ctx.tileToPixel(y), 'player');
+  this.sprite.inputEnabled = true;
+  this.target = null;
 
-  // _sprite.scale.setTo(ctx.scale, ctx.scale);
-  var _target = null;
+  this.sprite.anchor.setTo(-0.5, -0.5);
+  ctx.game.camera.follow(this.sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
-  _sprite.anchor.setTo(-0.5, -0.5);
-  ctx.game.camera.follow(_sprite, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-  // console.log('_sprite', _sprite.body);
+  ctx.game.physics.arcade.enable(this.sprite);
+  this.sprite.enableBody = true;
+  this.sprite.body.collideWorldBounds = true;
+  this.sprite.body.immovable = true;
 
-  ctx.game.physics.arcade.enable(_sprite);
-  _sprite.enableBody = true;
-  _sprite.body.collideWorldBounds = true;
-  _sprite.body.immovable = true;
-
-  var _cursors = ctx.game.input.keyboard.createCursorKeys();
-  // _sprite.input.enabled = true;
-
-  var _lastPosition = null;
+  this._cursors = ctx.game.input.keyboard.createCursorKeys();
 
   this.getSprite = function () {
-    return _sprite;
+    return this.sprite;
   }
 
-  move = function () {
-    // var t1 = new Date().getMilliseconds();
-    var collistionWithMonster = ctx.game.physics.arcade.collide(_sprite, ctx.monstersGroup);
-    // console.log('collistionWithMonster', collistionWithMonster, !_allowInput, _lastPosition)
-    if (collistionWithMonster) {
-      if (!_allowInput) {
-        if (_lastPosition) {
-          rollbackMove(_lastPosition);
-        }
-      }
-    }
-
-    // var t2 = new Date().getMilliseconds();
-    // _sprite.angle += 1;
+  this.move = function () {
     if (_allowInput) {
 
       var moveObject = null;
-      if (_cursors.left.isDown) {
+      if (this._cursors.left.isDown) {
         moveObject = { x: '-32' };
-      } else if (_cursors.right.isDown) {
+      } else if (this._cursors.right.isDown) {
         moveObject = { x: '+32' };        // player.x += 32;
-      } else if (_cursors.up.isDown) {
+      } else if (this._cursors.up.isDown) {
         moveObject = { y: '-32' };        // player.x += 32;
-      } else if (_cursors.down.isDown) {
+      } else if (this._cursors.down.isDown) {
         moveObject = { y: '+32' };      // player.x += 32;
       }
-
-      // console.log('moveObject' ,moveObject)
       if (moveObject) {
-        if (checkIfMovePossible(moveObject)) {
-          movePlayer(moveObject);
+        if (this.checkIfMovePossible(moveObject)) {
+          this.movePlayer(moveObject);
         }
       }
     }
-    // var t3 = new Date().getMilliseconds();
-    // console.log(t2 - t1, t3 - t2)
   }
 
 
-  var makeAttack = function () {
-    if (_target && _allowAttack) {
+  this.makeAttack = function () {
+    if (this.target && _allowAttack) {
       _allowAttack = false;
-      var dist = game.physics.arcade.distanceBetween(_sprite, _target.sprite);
+      var dist = game.physics.arcade.distanceBetween(this.sprite, this.target.sprite);
       if (dist <= _self.attackRange) {
-        // console.log('attacking')
-        ctx.dmgSolver(_self, _target);
+        ctx.dmgSolver(_self, this.target);
         _allowIAttackTimeout = setTimeout(function () {
           _allowAttack = true;
         }, 1000)
@@ -188,47 +139,45 @@ Player = function (ctx) {
   }
 
   this.markTarget = function (target) {
-    _target = target;
+    this.target = target;
   }
   this.unmark = function () {
-    _target = null;
+    this.target = null;
   }
 
-  var rollbackMove = function (_lastPosition) {
+  var rollbackMove = function () {
     _tween.reverse = true;
   }
 
-  var checkIfMovePossible = function (moveObject) {
-    var posX = _sprite.x + (moveObject.x ? parseInt(moveObject.x) : 0);
-    var posY = _sprite.y + (moveObject.y ? parseInt(moveObject.y) : 0);
-
-    var tileY = posY / 32 + 0.5;
-    var tileX = posX / 32 + 0.5;
-    return ctx.checkEmptySpotOnMap(tileX, tileY);
+  this.checkIfMovePossible = function (moveObject) {
+    var tileX = pixelToTile(this.sprite.x + (moveObject.x ? parseInt(moveObject.x) : 0));
+    var tileY = pixelToTile(this.sprite.y + (moveObject.y ? parseInt(moveObject.y) : 0));
+    return ctx.checkEmptySpotOnMap(tileX, tileY, this, null);
   }
-  var movePlayer = function (moveParams) {
+  this.movePlayer = function (moveObject) {
     _allowInput = false;
-    // _sprite.input.enabled = false;
-    _lastPosition = { x: parseInt(_sprite.x), y: parseInt(_sprite.y) };
-    _tween = ctx.game.add.tween(_sprite).to(moveParams, 600, Phaser.Easing.Linear.None, false);
+    var tileX = pixelToTile(this.sprite.x + (moveObject.x ? parseInt(moveObject.x) : 0));
+    var tileY = pixelToTile(this.sprite.y + (moveObject.y ? parseInt(moveObject.y) : 0));
+
+    this.nextLocation = { x: tileX, y: tileY }
+
+    _tween = ctx.game.add.tween(this.sprite).to(moveObject, 600, Phaser.Easing.Linear.None, false);
     _tween.onComplete.add(() => {
-      console.log('complete')
+      this.location = this.nextLocation;
+      this.nextLocation = null;
       _allowInput = true;
     })
-    _tween.start();
-    // _allowInputTimeout = setTimeout(function () {
 
-    //   // _sprite.input.enabled = true;
-    // }, 700);
+    _tween.start();
   }
 
   _highlightTargetArea = null
-  var highlightTarget = function () {
+  this.highlightTarget = function () {
     _highlightTargetArea && _highlightTargetArea.destroy();
-    if (_target) {
+    if (this.target) {
       _highlightTargetArea = game.add.graphics(32, 32);
       var color = 0xFFFFFF;
-      var dist = ctx.game.physics.arcade.distanceBetween(_sprite, _target.sprite);
+      var dist = ctx.game.physics.arcade.distanceBetween(this.sprite, this.target.sprite);
       // console.log(dist)
       if (dist < ctx.RANGE.RANGED) {
         color = 0xCCCC00;
@@ -241,7 +190,7 @@ Player = function (ctx) {
       }
 
       _highlightTargetArea.lineStyle(2, color, 1);
-      _highlightTargetArea.drawRect(_target.sprite.x - 16, _target.sprite.y - 16, 32, 32);
+      _highlightTargetArea.drawRect(this.target.sprite.x - 16, this.target.sprite.y - 16, 32, 32);
     }
   }
 
@@ -259,9 +208,13 @@ Player = function (ctx) {
 
   this.update = function () {
     // return;
-    move();
-    highlightTarget();
-    makeAttack();
+    this.move();
+    this.highlightTarget();
+    this.makeAttack();
   }
+
+  ctx.playerRepo.add(this);
+
+  return this;
 
 }

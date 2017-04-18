@@ -74,17 +74,6 @@ this.drawHp = function (target) {
   }
   var perc = target.hp / target.fullHp;
   var g = game.add.graphics(32, 32);
-  //     function numberToColorHsl(i) {
-  //     // as the function expects a value between 0 and 1, and red = 0° and green = 120°
-  //     // we convert the input to the appropriate hue value
-  var hue = perc * 1.2 / 360;
-  //     // we convert hsl to rgb (saturation 100%, lightness 50%)
-  var rgb = Phaser.Color.RGBtoHSV(hue, 1, .5);
-  // console.log(rgb)
-  //     // we format to css value and return
-  // return ';
-  // }
-  // console.log(Phaser.Color.componentToHex(rgb.r), Phaser.Color.componentToHex(rgb.g))
   var color = '0x00ff00';
   if (perc <= 0.7) {
     color = '0xffff00';
