@@ -9,10 +9,10 @@ app.get('/', (request, response) => {
   response.sendFile('index.html', { root: path.join(__dirname, '') })
 })
 
-app.use('/app', express.static('app'));
+app.use('/app', express.static('./app'));
 // app.use('/js', express.static('js'));
-app.use('/assets', express.static('assets'));
-app.use('/assets/map', express.static('assets/map'));
+app.use('/assets', express.static('./assets'));
+app.use('/assets/map', express.static('./assets/map'));
 
 app.use((err, request, response, next) => {
   // log the error, for now just console.log
