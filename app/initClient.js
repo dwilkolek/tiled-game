@@ -18,7 +18,7 @@ this.initClient = function (ctx) {
   ctx.playersGroup = null;
   ctx.effectsGroup = null;
 
-  ctx.game = new Phaser.Game(16 * 32, 12 * 32, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+  ctx.game = new Phaser.Game(16 * 32, 12 * 32, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 
   function preload() {
