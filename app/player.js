@@ -1,7 +1,7 @@
 Player = function (ctx, px, py) {
 
-  this.attack = 10;
-  this.defence = 10;
+  this.attack = 18;
+  this.defence = 13;
   this.agility = 10;
   this.fullHp = 300;
   this.hp = 200;
