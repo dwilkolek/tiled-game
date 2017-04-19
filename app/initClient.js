@@ -69,7 +69,7 @@ this.initClient = function (ctx) {
   }
 
   function render() {
-    // ctx.game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
+    ctx.game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
     // game.debug.cameraInfo(game.camera, 32, 32);
     // game.debug.body(ctx.player.getSprite());
 
